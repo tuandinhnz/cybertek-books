@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cybertek.Books.DataLayer\Cybertek.Books.DataLayer.csproj" />
+    <ProjectReference Include="..\Cybertek.Books.Services\Cybertek.Books.Services.csproj" />
+    <ProjectReference Include="..\Cybertek.Books\Cybertek.Books.csproj" />
+    <ProjectReference Include="..\Cybertek.Books.DataLayer\Cybertek.Books.DataLayer.csproj" />
+    <ProjectReference Include="..\Cybertek.Books.Services\Cybertek.Books.Services.csproj" />
+    <ProjectReference Include="..\Cybertek.Books\Cybertek.Books.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <ProjectReference Include="..\..\cybertek-core\Cybertek.Apis.Common\Cybertek.Apis.Common.csproj" />
+    <ProjectReference Include="..\..\cybertek-core\Cybertek.Logging\Cybertek.Logging.csproj" />
+    <ProjectReference Include="..\..\cybertek-core\Cybertek.Monitoring\Cybertek.Monitoring.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cybertek.Apis.Common" Version="1.0.0.*" />
+    <PackageReference Include="Cybertek.Logging" Version="1.0.0.*"/>
+    <PackageReference Include="Cybertek.Monitoring" Version="1.0.0.*" />
+  </ItemGroup>
+</Project>
