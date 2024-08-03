@@ -14,8 +14,15 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='DEBUG'">
     <ProjectReference Include="..\..\cybertek-core\Cybertek.Repository\Cybertek.Repository.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cybertek.Repository" Version="1.0.0.*"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Cybertek.Books.Domains\Cybertek.Books.Domains.csproj"/>
   </ItemGroup>
 
