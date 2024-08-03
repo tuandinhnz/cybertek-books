@@ -1,0 +1,48 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    types:
+      - opened
+  workflow_dispatch:
+
+jobs:
+  BuildJob:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4.1.7
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 1
+
+      - name: Print current working directory
+        run: echo Current working directory is ${{github.workspace}}
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4.0.1
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Verify package version
+        run: |
+          echo The current directory is $(pwd)
+          for i in $(find . -type f -iname "*.csproj"); do cat $i; done
+
+      - name: Restore dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --no-restore --configuration Release -o bin/Release/
+
+      - name: Upload NuGet package to GitHub
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: cybertek-books-artifact
+          path: bin/Release/
+          retention-days: 7
+          
