@@ -32,12 +32,9 @@ jobs:
         run: |
           echo The current directory is $(pwd)
           for i in $(find . -type f -iname "*.csproj"); do cat $i; done
-
-      - name: Restore dependencies
-        run: dotnet restore --configuration Release
-        
+     
       - name: Build
-        run: dotnet build --no-restore --configuration Release -o bin/Release/
+        run: dotnet build --configuration Release -o bin/Release/
 
       - name: Upload NuGet package to GitHub
         uses: actions/upload-artifact@v4.3.4
