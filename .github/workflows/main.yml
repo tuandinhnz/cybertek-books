@@ -63,5 +63,5 @@ jobs:
           
       - name: Check artifact files
         run: |
-          cd cybertek-books-artifact
+          ls -ahl 
           
