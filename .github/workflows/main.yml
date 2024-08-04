@@ -41,6 +41,7 @@ jobs:
       - name: Build
         run: |
           cd ${{ github.event.repository.name }} 
+          dotnet nuget add source "https://nuget.pkg.github.com/tuandinhnz/index.json" --username tuandinhnz --password ${{ github.token }} --store-password-in-clear-text --name github
           dotnet build --configuration Release -o bin/Release/
 
       - name: Upload NuGet package to GitHub
