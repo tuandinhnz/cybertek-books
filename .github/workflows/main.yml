@@ -19,19 +19,24 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 1
+          path: ${{ github.event.repository.name }}
+          
+      - name: Checkout core repo
+        uses: actions/checkout@v4.1.7
+        with:
+          repository: tuandinhnz/cybertek-core
+          fetch-depth: 1
+          path: cybertek-core 
 
       - name: Print current working directory
-        run: echo Current working directory is ${{github.workspace}}
+        run: |
+          echo Current working directory is $(pwd)
+          ls
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4.0.1
         with:
           dotnet-version: 8.0.x
-
-      - name: Verify package version
-        run: |
-          echo The current directory is $(pwd)
-          for i in $(find . -type f -iname "*.csproj"); do cat $i; done
      
       - name: Build
         run: dotnet build --configuration Release -o bin/Release/
