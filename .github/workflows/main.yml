@@ -65,5 +65,15 @@ jobs:
       - name: Check artifact files
         run: |
           cd  ${{ github.event.repository.name }}
-          ls -ahl 
+          ls -ahl
+          
+      - name: Build Dockerfile
+        run: |
+          echo "FROM 375141101201.dkr.ecr.us-west-2.amazonaws.com/$base_docker_image 
+          WORKDIR /app/ 
+          COPY . /app/ 
+          ENTRYPOINT [\"bash\", \"-c\"] 
+          CMD [\"dotnet $DLLNAME\"] 
+          EXPOSE $service_port" > Dockerfile
+          cat Dockerfile
           
