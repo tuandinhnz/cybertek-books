@@ -47,10 +47,10 @@ jobs:
       - name: Upload NuGet package to GitHub
         uses: actions/upload-artifact@v4.3.4
         with:
-          name: cybertek-books-artifact
+          name: ${{ github.event.repository.name }}-artifact
           path: ${{ github.event.repository.name }}/bin/Release/
           retention-days: 7
-          
+
   DockerizeBuild:
     runs-on: ubuntu-latest
     needs: BuildJob
@@ -59,9 +59,11 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4.1.8
         with:
-          name: cybertek-books-artifact
+          path: ${{ github.event.repository.name }}
+          name:  ${{ github.event.repository.name }}-artifact
           
       - name: Check artifact files
         run: |
+          cd  ${{ github.event.repository.name }}
           ls -ahl 
           
