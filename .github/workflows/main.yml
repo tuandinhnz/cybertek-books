@@ -69,6 +69,7 @@ jobs:
           
       - name: Build Dockerfile
         run: |
+          docker login -u letuandinh -p ${{ secrets.docker_password }}
           echo "FROM 375141101201.dkr.ecr.us-west-2.amazonaws.com/$base_docker_image 
           WORKDIR /app/ 
           COPY . /app/ 
