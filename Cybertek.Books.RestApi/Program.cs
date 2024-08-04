@@ -16,6 +16,9 @@ using Cybertek.Settings.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+//Configure the port number here
+builder.WebHost.UseUrls("http://*:5003");
 builder.Host.UseLogging();
 builder.Configuration.AddConfigurationFiles(builder.Environment);
 
@@ -81,12 +84,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.UseKubernetesHealthCheck();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
