@@ -51,3 +51,16 @@ jobs:
           path: bin/Release/
           retention-days: 7
           
+  DockerizeBuild:
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: cybertek-books-artifact
+          
+      - name: Check artifact files
+        run: |
+          cd cybertek-books-artifact
+          
