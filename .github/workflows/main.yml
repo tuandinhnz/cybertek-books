@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: cybertek-books-artifact
-          path: bin/Release/
+          path: ${{ github.event.repository.name }}/bin/Release/
           retention-days: 7
           
   DockerizeBuild:
