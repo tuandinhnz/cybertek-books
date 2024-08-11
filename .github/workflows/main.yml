@@ -8,6 +8,14 @@ on:
     types:
       - opened
   workflow_dispatch:
+    
+env:
+  AWS_REGION : "us-west-2"
+  
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+  packages: read
 
 jobs:
   BuildJob:
@@ -19,27 +27,74 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 1
+          path: ${{ github.event.repository.name }}
+          
+      - name: Checkout core repo
+        uses: actions/checkout@v4.1.7
+        with:
+          repository: tuandinhnz/cybertek-core
+          fetch-depth: 1
+          path: cybertek-core 
 
       - name: Print current working directory
-        run: echo Current working directory is ${{github.workspace}}
+        run: |
+          echo Current working directory is $(pwd)
+          ls
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4.0.1
         with:
           dotnet-version: 8.0.x
-
-      - name: Verify package version
-        run: |
-          echo The current directory is $(pwd)
-          for i in $(find . -type f -iname "*.csproj"); do cat $i; done
      
       - name: Build
-        run: dotnet build --configuration Release -o bin/Release/
+        run: |
+          cd ${{ github.event.repository.name }} 
+          dotnet nuget add source "https://nuget.pkg.github.com/tuandinhnz/index.json" --username tuandinhnz --password ${{ github.token }} --store-password-in-clear-text --name github
+          dotnet build --configuration Release -o bin/Release/
 
       - name: Upload NuGet package to GitHub
         uses: actions/upload-artifact@v4.3.4
         with:
-          name: cybertek-books-artifact
-          path: bin/Release/
+          name: ${{ github.event.repository.name }}-artifact
+          path: ${{ github.event.repository.name }}/bin/Release/
           retention-days: 7
+
+  DockerizeBuild:
+    runs-on: ubuntu-latest
+    needs: BuildJob
+    
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          path: ${{ github.event.repository.name }}
+          name:  ${{ github.event.repository.name }}-artifact
+          
+      - name: Check artifact files
+        run: |
+          cd  ${{ github.event.repository.name }}
+          ls -ahl
+
+      - name: Build Dockerfile
+        run: |
+          docker login -u letuandinh -p ${{ secrets.docker_password }}
+          echo "FROM 375141101201.dkr.ecr.us-west-2.amazonaws.com/$base_docker_image 
+          WORKDIR /app/ 
+          COPY . /app/ 
+          ENTRYPOINT [\"bash\", \"-c\"] 
+          CMD [\"dotnet $(find . -type f -name "*.RestApi.dll" -exec basename {} \;)\"] 
+          EXPOSE $service_port" > Dockerfile
+          cat Dockerfile
+          
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::228104716811:role/github-actions-iam-role
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Get identity
+        run: |
+          aws sts get-caller-identity
+            
           
