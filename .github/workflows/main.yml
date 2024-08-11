@@ -8,6 +8,13 @@ on:
     types:
       - opened
   workflow_dispatch:
+    
+env:
+  AWS_REGION : "us-west-2"
+  
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
 
 jobs:
   BuildJob:
@@ -66,7 +73,7 @@ jobs:
         run: |
           cd  ${{ github.event.repository.name }}
           ls -ahl
-          
+
       - name: Build Dockerfile
         run: |
           docker login -u letuandinh -p ${{ secrets.docker_password }}
@@ -77,4 +84,16 @@ jobs:
           CMD [\"dotnet $DLLNAME\"] 
           EXPOSE $service_port" > Dockerfile
           cat Dockerfile
+          
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::228104716811:role/github-actions-iam-role
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Get identity
+        run: |
+          aws sts get-caller-identity
+            
           
