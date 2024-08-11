@@ -82,7 +82,7 @@ jobs:
           WORKDIR /app/ 
           COPY . /app/ 
           ENTRYPOINT [\"bash\", \"-c\"] 
-          CMD [\"dotnet $DLLNAME\"] 
+          CMD [\"dotnet $(find . -type f -name "*.RestApi.dll")\"] 
           EXPOSE $service_port" > Dockerfile
           cat Dockerfile
           
